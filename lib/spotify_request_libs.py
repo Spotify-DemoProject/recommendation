@@ -73,4 +73,4 @@ def post_response(auth_token:str, endpoint:str, data:dict=None):
     return response.json()
 
 if __name__ == "__main__":
-    create_auth_code(client_id="67634b8925dc48f79e59045d9e4d5014")
+    create_auth_code(client_id="")
