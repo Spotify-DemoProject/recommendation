@@ -1,5 +1,5 @@
 
-def create_auth_code(client_id:str):
+def create_auth_code(client_id:str, scope:str):
     from urllib.parse import urlencode
     import webbrowser
 
@@ -7,7 +7,7 @@ def create_auth_code(client_id:str):
         "client_id": client_id,
         "response_type": "code",
         "redirect_uri": "http://localhost:7777/callback",
-        "scope": "playlist-modify-private"
+        "scope": scope
     }
 
     webbrowser.open("https://accounts.spotify.com/authorize?" + urlencode(auth_headers))
@@ -73,4 +73,19 @@ def post_response(auth_token:str, endpoint:str, data:dict=None):
     return response.json()
 
 if __name__ == "__main__":
-    create_auth_code(client_id="")
+    import os, sys
+    from configparser import ConfigParser
+
+    file_dir = os.path.dirname(os.path.abspath(__file__))
+    sys.path.append(f"{file_dir}/../lib")
+    from spotify_libs import *
+    from spotify_request_libs import *
+
+    config = ConfigParser()
+    config.read(f"{file_dir}/../config/config.ini")
+
+    client_id = config.get("spotify", "client_id")
+    client_sc = config.get("spotify", "client_sc")
+
+    create_auth_code(client_id=client_id, scope="playlist-modify-private")
+    
