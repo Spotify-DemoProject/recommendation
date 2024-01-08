@@ -8,6 +8,7 @@ Apache Spark 및 Spotify API 서비스를 기반으로 한 추천 시스템 레�
 <br>
 ![dsf 003](https://github.com/Spotify-DemoProject/recommendation/assets/130134750/5debd2e2-71a2-4050-8771-10afd0500d3d)
 <br>
+
 # Environments
 - Ubuntu v22.04 LTS
 - Python v3.12.0
