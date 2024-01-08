@@ -13,4 +13,4 @@ Apache Spark 및 Spotify API 서비스를 기반으로 한 추천 시스템 레�
 <br>
 <br>
 # Results
-![example](https://github.com/Spotify-DemoProject/recommendation/assets/130134750/3d34e294-d0c6-4d46-8aae-38049e1814fd)
+![example](https://github.com/Spotify-DemoProject/recommendation/assets/130134750/37a8e7a9-2421-4e0e-87ab-6d55a819e835)
