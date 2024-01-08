@@ -42,7 +42,6 @@ def get_users_playlistIds(spark, user_id:str, access_token:str):
         track_list += ids
         
         total = df_playlist_spec.select("total").first()[0]
-        print(total)
         left = int(total)-100
         cnt = ceil(left/100)
         
@@ -172,7 +171,6 @@ def create_knn_recommendationList(df, track_list:list):
 
     # Test Dataset
     df_result = model.transform(df_assembled_test)
-    df_result.show()
 
     def calculate_distance(vector):
         return float(np.linalg.norm(vector.toArray() - numpy_coordinates))
@@ -224,4 +222,3 @@ def create_recommendPlaylists(user_id:str, auth_token:str, recommendationList:li
 
     returned_final = post_response(auth_token=auth_token, endpoint=endpoint, data=data)
     print(returned_final)
-
