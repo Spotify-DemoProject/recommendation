@@ -155,13 +155,14 @@ def standard_scale_dataframe(df, columns:list):
 
     return df
 
-# create_knn_recommendationList(df=df, track_list=..)
-def create_knn_recommendationList(df, track_list:list):
+# create_kmeans_recommendationList(df=df, track_list=..)
+def create_kmeans_recommendationList(df, track_list:list):
     from pyspark.ml.feature import VectorAssembler
     from pyspark.ml.clustering import KMeans
     from pyspark.sql.functions import col
     from pyspark.sql.functions import udf
     from pyspark.sql.types import DoubleType
+    from math import ceil
     import numpy as np
 
     # Split Dataframe
@@ -169,7 +170,7 @@ def create_knn_recommendationList(df, track_list:list):
     scaled_test = df.filter(~col("id").isin(track_list))
         
     # Select Features
-    selected_features = ["popularity", "key", "mode", "time_signature", "tempo", "acousticness", "danceability", "energy", "instrumentalness", "liveness", "loudness", "speechiness", "valence"]
+    selected_features = ["popularity", "key", "time_signature", "tempo", "acousticness", "danceability", "energy", "instrumentalness", "liveness", "loudness", "speechiness", "valence"]
 
     # Define Assembler
     assembler = VectorAssembler(inputCols=selected_features, outputCol="features")
@@ -177,9 +178,12 @@ def create_knn_recommendationList(df, track_list:list):
     # Assemble Features
     df_assembled_train = assembler.transform(scaled_train)
     df_assembled_test = assembler.transform(scaled_test)
+    
+    # Set K
+    K = ceil(len(track_list) / 10)
 
     # Create Model == Train Dataset
-    kmeans = KMeans(featuresCol="features", k=4, seed=4)
+    kmeans = KMeans(featuresCol="features", k=K, seed=4)
     model = kmeans.fit(df_assembled_train)
 
     # Check Centers
@@ -198,7 +202,7 @@ def create_knn_recommendationList(df, track_list:list):
 
     # Create Recommend List (Track IDs)
     recommend_list = []
-    for i in range(4):
+    for i in range(K):
         # Create Distance Column & Sort
         numpy_coordinates = centers[i]
         df_with_distance = df_result \
@@ -208,7 +212,7 @@ def create_knn_recommendationList(df, track_list:list):
             .orderBy("distance", ascending=True)
         
         # Add Items to Recommend List
-        collect_list = [row.id for row in df_with_distance.limit(5).collect()]
+        collect_list = [row.id for row in df_with_distance.limit(2).collect()]
         recommend_list += collect_list
     
     return recommend_list
